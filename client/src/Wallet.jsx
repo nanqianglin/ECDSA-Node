@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { toHex } from 'ethereum-cryptography/utils';
 
 import server from './server';
-import { getAddress, signMessage, getPublicKey } from './utils';
+import { getAddress, signMessage } from './utils';
 
 BigInt.prototype['toJSON'] = function () {
   return this.toString();
@@ -15,15 +14,12 @@ function Wallet({
   setBalance,
   signature,
   setSignature,
-  setPublicKey,
 }) {
   const [privateKey, setPrivateKey] = useState('');
 
   async function onChange(evt) {
     const privateKey = evt.target.value;
-    const publicKey = getPublicKey(privateKey);
     setPrivateKey(privateKey);
-    publicKey && setPublicKey(toHex(publicKey));
     const address = getAddress(privateKey);
     setAddress(address);
     if (address) {

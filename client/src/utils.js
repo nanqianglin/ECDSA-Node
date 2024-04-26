@@ -11,13 +11,6 @@ export function getAddress(privateKey) {
     return undefined;
   }
 }
-export function getPublicKey(privateKey) {
-  if (secp256k1.utils.isValidPrivateKey(privateKey)) {
-    return secp256k1.getPublicKey(privateKey);
-  } else {
-    return undefined;
-  }
-}
 
 function hashMessage(message) {
   const bytes = utf8ToBytes(message);

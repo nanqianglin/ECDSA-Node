@@ -6,7 +6,6 @@ import { useState } from 'react';
 function App() {
   const [balance, setBalance] = useState(0);
   const [address, setAddress] = useState();
-  const [publicKey, setPublicKey] = useState();
   const [signature, setSignature] = useState();
 
   return (
@@ -18,13 +17,11 @@ function App() {
         setAddress={setAddress}
         signature={signature}
         setSignature={setSignature}
-        setPublicKey={setPublicKey}
       />
       <Transfer
         setBalance={setBalance}
         address={address}
         signature={signature}
-        publicKey={publicKey}
       />
     </div>
   );
