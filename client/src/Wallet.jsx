@@ -1,8 +1,30 @@
-import server from "./server";
+import { useEffect, useState } from 'react';
+import { toHex } from 'ethereum-cryptography/utils';
 
-function Wallet({ address, setAddress, balance, setBalance }) {
+import server from './server';
+import { getAddress, signMessage, getPublicKey } from './utils';
+
+BigInt.prototype['toJSON'] = function () {
+  return this.toString();
+};
+
+function Wallet({
+  address,
+  setAddress,
+  balance,
+  setBalance,
+  signature,
+  setSignature,
+  setPublicKey,
+}) {
+  const [privateKey, setPrivateKey] = useState('');
+
   async function onChange(evt) {
-    const address = evt.target.value;
+    const privateKey = evt.target.value;
+    const publicKey = getPublicKey(privateKey);
+    setPrivateKey(privateKey);
+    publicKey && setPublicKey(toHex(publicKey));
+    const address = getAddress(privateKey);
     setAddress(address);
     if (address) {
       const {
@@ -14,15 +36,32 @@ function Wallet({ address, setAddress, balance, setBalance }) {
     }
   }
 
+  useEffect(() => {
+    async function update() {
+      const sig = await signMessage(privateKey);
+      setSignature(sig?.toCompactHex?.());
+    }
+    update();
+  }, [privateKey]);
+
   return (
     <div className="container wallet">
-      <h1>Your Wallet</h1>
+      <h1>Your Private Key</h1>
 
       <label>
-        Wallet Address
-        <input placeholder="Type an address, for example: 0x1" value={address} onChange={onChange}></input>
+        Private Key (it's just sign a message for the send transaction and we
+        NEVER save your private key)
+        <input
+          placeholder="Type an private key"
+          value={privateKey}
+          onChange={onChange}
+        ></input>
       </label>
 
+      <div className="address">Address: {address}</div>
+      <div className="signature">
+        Has Signature: {Boolean(signature).toString()}
+      </div>
       <div className="balance">Balance: {balance}</div>
     </div>
   );
